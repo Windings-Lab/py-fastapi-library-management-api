@@ -10,6 +10,28 @@ from database import create_db_session
 
 app = FastAPI()
 
+class FilteredList:
+    def __init__(
+            self,
+            model: type[models.Base],
+    ) -> None:
+        self.model = model
+
+    def __call__(
+            self,
+            db_session: Session = Depends(create_db_session),
+            skip: int | None = None,
+            limit: int | None = None,
+
+    ) -> list[type[models.Base]]:
+        result = crud.get_list(
+            db_session,
+            self.model,
+            skip=skip,
+            limit=limit
+        )
+        return result
+
 
 @app.post("/author/")
 def create_author(
@@ -21,12 +43,10 @@ def create_author(
 
 @app.get("/author/", response_model=list[schemas.Author])
 def get_authors(
-        db_session: Session = Depends(create_db_session),
-        skip: int | None = None,
-        limit: int | None = None
+        result: Annotated[list,
+            Depends(FilteredList(models.Author))
+        ]
 ) -> list:
-    result = crud.get_list(db_session, models.Author, skip=skip, limit=limit)
-
     return [schemas.Author.model_validate(item) for item in result]
 
 
@@ -49,12 +69,11 @@ def create_book(
 
 @app.get("/book/", response_model=list[schemas.Book])
 def get_books(
-        db_session: Session = Depends(create_db_session),
-        skip: int | None = None,
-        limit: int | None = None
+        result: Annotated[
+            list,
+            Depends(FilteredList(models.Book))
+        ]
 ) -> list:
-    result = crud.get_list(db_session, models.Book, skip=skip, limit=limit)
-
     return [schemas.Book.model_validate(item) for item in result]
 
 

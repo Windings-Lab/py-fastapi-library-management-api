@@ -1,5 +1,3 @@
-from typing import Type
-
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
@@ -9,10 +7,10 @@ import models
 
 def get_list(
         db_session: Session,
-        model: Type[models.Base],
+        model: type[models.Base],
         skip: int = 0,
         limit: int = 100
-) -> list[Type[models.Base]]:
+) -> list[type[models.Base]]:
     db_query = db_session.query(model)
 
     if skip is not None:
@@ -34,10 +32,10 @@ def create(
 
 def get_by_id(
         db_session: Session,
-        model: Type[models.Base],
+        model: type[models.Base],
         item_id: int
-) -> Type[models.Base]:
-    result: Type[models.Base] = (
+) -> type[models.Base]:
+    result: type[models.Base] = (
         db_session
         .query(model)
         .filter(model.id == item_id)
@@ -54,7 +52,7 @@ def get_by_id(
 def get_books_by_author_id(
         db_session: Session,
         author_id: int,
-) -> list[Type[models.Book]]:
+) -> list[type[models.Book]]:
     result = (
         db_session
         .query(models.Book)
