@@ -37,6 +37,6 @@ def test_uniqueness(
 
 
 def add_and_commit(db_session: Session, schema: GSchema):
-    instance = schema._model_class(**schema.__dict__)
+    instance = schema._model_class(**schema.model_dump())
     db_session.add(instance)
     db_session.commit()

@@ -62,7 +62,7 @@ def get_books_by_author_id(
         .all()
     )
 
-    if result is None:
+    if not result:
         detail = f"{models.Book.__name__}s with {author_id} id not found"
         raise HTTPException(status_code=404, detail=detail)
 

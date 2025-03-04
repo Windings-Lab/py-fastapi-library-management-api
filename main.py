@@ -58,7 +58,7 @@ def get_books(
     return [schemas.Book.model_validate(item) for item in result]
 
 
-@app.get("/book/{author_id}", response_model=list[schemas.Book])
+@app.get("/books/author/{author_id}", response_model=list[schemas.Book])
 def get_books_by_author_id(
         author_id: int,
         db_session: Session = Depends(create_db_session),
